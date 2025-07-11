@@ -73,71 +73,71 @@ const SaveTab: React.FC = () => {
   };
 
   return (
-    <div className="p-4 space-y-3">
-      {/* Primary Focus: Text Snippet */}
-      <div className="space-y-2">
-        <label className="ds-label">Text snippet</label>
-        <textarea
-          value={snippet}
-          onChange={(e) => setSnippet(e.target.value)}
-          placeholder="Paste or type your snippet here..."
-          className="ds-textarea h-24"
-          rows={3}
-        />
-      </div>
+    <div className="p-4 space-y-4">
+      {/* Text Snippet Card */}
+      <div className="bg-white border rounded-lg p-4 space-y-3">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Text snippet
+          </label>
+          <textarea
+            value={snippet}
+            onChange={(e) => setSnippet(e.target.value)}
+            placeholder="Paste or type your snippet here..."
+            className="w-full p-3 border border-gray-300 rounded-md resize-none h-24"
+            rows={3}
+          />
+        </div>
 
-      {/* Tags */}
-      <div className="space-y-2">
-        <label className="ds-label">Tags (optional)</label>
-        <input
-          type="text"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          placeholder="AI, research, important"
-          className="ds-input"
-        />
-      </div>
-
-      {/* Primary Action - Most Prominent */}
-      <button
-        onClick={handleSave}
-        disabled={isLoading || !snippet.trim()}
-        className="ds-button-primary w-full"
-      >
-        {isLoading ? 'Saving...' : 'Save Snippet'}
-      </button>
-
-      {/* Divider */}
-      <div className="flex items-center my-3">
-        <div className="flex-1 border-t border-gray-200"></div>
-        <span className="px-3 ds-text-xs" style={{ color: 'var(--gray-500)' }}>or</span>
-        <div className="flex-1 border-t border-gray-200"></div>
-      </div>
-
-      {/* Secondary Action - Save Current Page */}
-      <div className="space-y-2">
-        <label className="ds-label">Current page</label>
-        <div className="flex items-center space-x-2">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Tags (optional)
+          </label>
           <input
             type="text"
-            value={currentUrl}
-            readOnly
-            className="ds-input ds-input-readonly flex-1"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="AI, research, important"
+            className="w-full p-3 border border-gray-300 rounded-md"
           />
-          <button
-            onClick={handleSavePage}
-            disabled={isLoading || !currentUrl}
-            className="ds-button-secondary"
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            {isLoading ? '...' : 'Save Page'}
-          </button>
+        </div>
+
+        <button
+          onClick={handleSave}
+          disabled={isLoading || !snippet.trim()}
+          className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+        >
+          {isLoading ? 'Saving...' : 'Save Snippet'}
+        </button>
+      </div>
+
+      {/* Save Current Page Card */}
+      <div className="bg-white border rounded-lg p-4 space-y-3">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Current page
+          </label>
+          <div className="flex items-center space-x-2">
+            <input
+              type="text"
+              value={currentUrl}
+              readOnly
+              className="flex-1 p-3 border border-gray-300 rounded-md bg-gray-50 text-gray-600"
+            />
+            <button
+              onClick={handleSavePage}
+              disabled={isLoading || !currentUrl}
+              className="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-400"
+            >
+              {isLoading ? '...' : 'Save Page'}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Success/Error Messages */}
       {message && (
-        <div className={message.includes('✅') ? 'ds-message-success' : 'ds-message-error'}>
+        <div className={`p-3 rounded-md ${message.includes('✅') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
           {message}
         </div>
       )}

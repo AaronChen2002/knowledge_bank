@@ -35,7 +35,7 @@ const SearchTab: React.FC = () => {
           source: 'https://example.com/ai-alignment',
           date: '2024-01-15',
           type: 'url',
-          tags: ['AI', 'Research', 'Alignment']
+          tags: ['AI', 'Research', 'Alignment', 'Important']
         },
         {
           id: '2',
@@ -44,7 +44,7 @@ const SearchTab: React.FC = () => {
           source: 'https://example.com/ml-notes',
           date: '2024-01-10',
           type: 'text',
-          tags: ['ML', 'Neural Networks']
+          tags: ['ML', 'Neural Networks', 'Development']
         }
       ];
       
@@ -69,10 +69,12 @@ const SearchTab: React.FC = () => {
   };
 
   return (
-    <div className="p-4 space-y-3">
-      {/* Primary Focus: Search Input */}
+    <div className="p-4 space-y-4">
+      {/* Search Input */}
       <div className="space-y-2">
-        <label className="ds-label">Search your knowledge</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Search your knowledge
+        </label>
         <div className="flex space-x-2">
           <input
             type="text"
@@ -80,22 +82,21 @@ const SearchTab: React.FC = () => {
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="What are you looking for?"
-            className="ds-input flex-1"
+            className="flex-1 p-3 border border-gray-300 rounded-md"
           />
           <button
             onClick={handleSearch}
             disabled={isLoading || !query.trim()}
-            className="ds-button-primary"
-            style={{ whiteSpace: 'nowrap' }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
           >
-            {isLoading ? '...' : 'Search'}
+            {isLoading ? 'Searching...' : 'Search'}
           </button>
         </div>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="ds-message-error">
+        <div className="p-3 bg-red-50 text-red-700 rounded-md border border-red-200">
           {error}
         </div>
       )}
@@ -103,7 +104,7 @@ const SearchTab: React.FC = () => {
       {/* Loading State */}
       {isLoading && (
         <div className="flex items-center justify-center py-8">
-          <div className="ds-text-sm" style={{ color: 'var(--gray-500)' }}>
+          <div className="text-sm text-gray-500">
             Searching your vault...
           </div>
         </div>
@@ -111,57 +112,51 @@ const SearchTab: React.FC = () => {
 
       {/* Results */}
       {results.length > 0 && !isLoading && (
-        <div className="space-y-2">
-          <h3 className="ds-text-sm ds-font-medium" style={{ color: 'var(--gray-700)' }}>
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-gray-700">
             Found {results.length} results
           </h3>
           
-          <div className="space-y-2 max-h-80 overflow-y-auto">
+          <div className="space-y-3 max-h-80 overflow-y-auto">
             {results.map((result) => (
-              <div key={result.id} className="ds-card">
-                <div className="flex items-start justify-between gap-2">
+              <div key={result.id} className="bg-white border rounded-lg p-4">
+                <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <h4 className="ds-font-medium ds-text-sm mb-1" style={{ color: 'var(--gray-900)' }}>
+                    <h4 className="font-medium text-sm mb-1 text-gray-900">
                       {result.title}
                     </h4>
-                    <p className="ds-text-sm mb-2" style={{ color: 'var(--gray-600)' }}>
+                    <p className="text-sm mb-3 text-gray-600">
                       {result.summary}
                     </p>
                     
-                    <div className="flex items-center gap-2 ds-text-xs" style={{ color: 'var(--gray-500)' }}>
-                      <span 
-                        className="px-2 py-1 rounded-full ds-text-xs"
-                        style={{
-                          backgroundColor: result.type === 'url' ? 'var(--purple-100)' : 'var(--green-100)',
-                          color: result.type === 'url' ? 'var(--purple-700)' : 'var(--green-700)'
-                        }}
-                      >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        result.type === 'url' 
+                          ? 'bg-purple-100 text-purple-700' 
+                          : 'bg-green-100 text-green-700'
+                      }`}>
                         {result.type === 'url' ? '🔗 URL' : '📝 Text'}
                       </span>
-                      <span>{result.date}</span>
-                      {result.tags && (
-                        <div className="flex gap-1">
-                          {result.tags.map((tag, index) => (
-                            <span 
-                              key={index} 
-                              className="px-2 py-1 rounded-full ds-text-xs"
-                              style={{ 
-                                backgroundColor: 'var(--gray-100)', 
-                                color: 'var(--gray-600)' 
-                              }}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                      <span className="text-xs text-gray-500">
+                        {result.date}
+                      </span>
                     </div>
+                    
+                    {result.tags && (
+                      <div className="flex flex-wrap gap-1">
+                        {result.tags.map((tag, index) => (
+                          <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   
                   {result.source && (
                     <button
                       onClick={() => openSource(result.source!)}
-                      className="ds-button-secondary ds-text-sm"
+                      className="px-3 py-1 text-xs bg-white border border-gray-300 rounded hover:bg-gray-50"
                     >
                       Open
                     </button>
@@ -175,10 +170,10 @@ const SearchTab: React.FC = () => {
 
       {/* Empty State */}
       {results.length === 0 && !isLoading && query && (
-        <div className="text-center py-8" style={{ color: 'var(--gray-500)' }}>
+        <div className="text-center py-8 text-gray-500">
           <div className="text-4xl mb-2">🔍</div>
-          <p className="ds-text-sm">No results found for "{query}"</p>
-          <p className="ds-text-xs mt-1">Try rephrasing your search</p>
+          <p className="text-sm">No results found for "{query}"</p>
+          <p className="text-xs mt-1">Try rephrasing your search</p>
         </div>
       )}
     </div>
