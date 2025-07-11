@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from 'url'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
