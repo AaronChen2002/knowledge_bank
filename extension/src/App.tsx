@@ -22,17 +22,20 @@ function App() {
   };
 
   return (
-    <div className="h-full bg-white">
+    <div className="h-full bg-gray-50">
       <div className="flex flex-col h-full">
-        <div className="flex-shrink-0">
-          <div className="px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-            <h1 className="text-lg font-semibold">Knowledge Bank</h1>
-            <p className="text-sm opacity-90">Save and search your knowledge</p>
+        {/* Minimal Header */}
+        <div className="flex-shrink-0 bg-white border-b border-gray-200">
+          <div className="px-4 py-3">
+            <h1 className="ds-text-lg ds-font-semibold" style={{ color: 'var(--gray-900)' }}>
+              Knowledge Bank
+            </h1>
           </div>
           <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
         
-        <div className="flex-1 overflow-y-auto">
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto bg-gray-50">
           {renderActiveTab()}
         </div>
       </div>

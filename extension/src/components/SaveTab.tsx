@@ -73,66 +73,71 @@ const SaveTab: React.FC = () => {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-3">
+      {/* Primary Focus: Text Snippet */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Text Snippet
-        </label>
+        <label className="ds-label">Text snippet</label>
         <textarea
           value={snippet}
           onChange={(e) => setSnippet(e.target.value)}
-          placeholder="Paste your snippet here..."
-          className="w-full h-32 p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Paste or type your snippet here..."
+          className="ds-textarea h-24"
+          rows={3}
         />
       </div>
 
+      {/* Tags */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Current Page
-        </label>
-        <input
-          type="text"
-          value={currentUrl}
-          readOnly
-          className="w-full p-2 text-sm bg-gray-50 border border-gray-300 rounded-md"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Tags (optional)
-        </label>
+        <label className="ds-label">Tags (optional)</label>
         <input
           type="text"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
-          placeholder="e.g., AI, research, important"
-          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="AI, research, important"
+          className="ds-input"
         />
       </div>
 
-      <div className="space-y-2">
-        <button
-          onClick={handleSave}
-          disabled={isLoading || !snippet.trim()}
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
-        >
-          {isLoading ? 'Saving...' : 'Save Snippet'}
-        </button>
-        
-        <button
-          onClick={handleSavePage}
-          disabled={isLoading || !currentUrl}
-          className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
-        >
-          {isLoading ? 'Saving...' : 'Save This Page'}
-        </button>
+      {/* Primary Action - Most Prominent */}
+      <button
+        onClick={handleSave}
+        disabled={isLoading || !snippet.trim()}
+        className="ds-button-primary w-full"
+      >
+        {isLoading ? 'Saving...' : 'Save Snippet'}
+      </button>
+
+      {/* Divider */}
+      <div className="flex items-center my-3">
+        <div className="flex-1 border-t border-gray-200"></div>
+        <span className="px-3 ds-text-xs" style={{ color: 'var(--gray-500)' }}>or</span>
+        <div className="flex-1 border-t border-gray-200"></div>
       </div>
 
+      {/* Secondary Action - Save Current Page */}
+      <div className="space-y-2">
+        <label className="ds-label">Current page</label>
+        <div className="flex items-center space-x-2">
+          <input
+            type="text"
+            value={currentUrl}
+            readOnly
+            className="ds-input ds-input-readonly flex-1"
+          />
+          <button
+            onClick={handleSavePage}
+            disabled={isLoading || !currentUrl}
+            className="ds-button-secondary"
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            {isLoading ? '...' : 'Save Page'}
+          </button>
+        </div>
+      </div>
+
+      {/* Success/Error Messages */}
       {message && (
-        <div className={`p-3 rounded-md text-sm ${
-          message.includes('✅') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
+        <div className={message.includes('✅') ? 'ds-message-success' : 'ds-message-error'}>
           {message}
         </div>
       )}

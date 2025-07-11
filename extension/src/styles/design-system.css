@@ -1,0 +1,199 @@
+/* Knowledge Bank Design System */
+
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* Design System Variables */
+:root {
+  /* Typography */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  
+  /* Colors - Neutral Base */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  
+  /* Colors - Accent (Light Purple) */
+  --purple-50: #faf5ff;
+  --purple-100: #f3e8ff;
+  --purple-200: #e9d5ff;
+  --purple-500: #8b5cf6;
+  --purple-600: #7c3aed;
+  --purple-700: #6d28d9;
+  
+  /* Colors - States */
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  
+  --red-50: #fef2f2;
+  --red-100: #fee2e2;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+  
+  --yellow-50: #fffbeb;
+  --yellow-100: #fef3c7;
+  --yellow-600: #d97706;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Base Styles */
+* {
+  font-family: var(--font-family);
+}
+
+/* Design System Utilities */
+.ds-text-xs { font-size: var(--text-xs); }
+.ds-text-sm { font-size: var(--text-sm); }
+.ds-text-base { font-size: var(--text-base); }
+.ds-text-lg { font-size: var(--text-lg); }
+
+.ds-font-normal { font-weight: var(--font-normal); }
+.ds-font-medium { font-weight: var(--font-medium); }
+.ds-font-semibold { font-weight: var(--font-semibold); }
+
+/* Component Styles */
+.ds-button-primary {
+  background-color: var(--purple-600);
+  color: white;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ds-button-primary:hover:not(:disabled) {
+  background-color: var(--purple-700);
+}
+
+.ds-button-primary:disabled {
+  background-color: var(--gray-400);
+  cursor: not-allowed;
+}
+
+.ds-button-secondary {
+  background-color: white;
+  color: var(--gray-700);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ds-button-secondary:hover:not(:disabled) {
+  background-color: var(--gray-50);
+  border-color: var(--gray-400);
+}
+
+.ds-input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  background-color: white;
+  transition: all 0.15s ease;
+}
+
+.ds-input:focus {
+  outline: none;
+  border-color: var(--purple-500);
+  box-shadow: 0 0 0 3px var(--purple-100);
+}
+
+.ds-input-readonly {
+  background-color: var(--gray-50);
+  color: var(--gray-600);
+}
+
+.ds-textarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  background-color: white;
+  resize: none;
+  transition: all 0.15s ease;
+}
+
+.ds-textarea:focus {
+  outline: none;
+  border-color: var(--purple-500);
+  box-shadow: 0 0 0 3px var(--purple-100);
+}
+
+.ds-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--gray-700);
+  margin-bottom: var(--space-2);
+}
+
+.ds-card {
+  background-color: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.ds-message-success {
+  background-color: var(--green-50);
+  color: var(--green-700);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  border: 1px solid var(--green-200);
+}
+
+.ds-message-error {
+  background-color: var(--red-50);
+  color: var(--red-700);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  border: 1px solid var(--red-200);
+} 

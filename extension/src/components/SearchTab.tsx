@@ -69,74 +69,87 @@ const SearchTab: React.FC = () => {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-3">
+      {/* Primary Focus: Search Input */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Search your knowledge
-        </label>
-        <div className="flex gap-2">
+        <label className="ds-label">Search your knowledge</label>
+        <div className="flex space-x-2">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="What are you looking for?"
-            className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="ds-input flex-1"
           />
           <button
             onClick={handleSearch}
             disabled={isLoading || !query.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
+            className="ds-button-primary"
+            style={{ whiteSpace: 'nowrap' }}
           >
-            {isLoading ? '🔍' : 'Search'}
+            {isLoading ? '...' : 'Search'}
           </button>
         </div>
       </div>
 
+      {/* Error Message */}
       {error && (
-        <div className="p-3 bg-red-100 text-red-800 rounded-md text-sm">
+        <div className="ds-message-error">
           {error}
         </div>
       )}
 
+      {/* Loading State */}
       {isLoading && (
         <div className="flex items-center justify-center py-8">
-          <div className="text-gray-500">Searching your vault...</div>
+          <div className="ds-text-sm" style={{ color: 'var(--gray-500)' }}>
+            Searching your vault...
+          </div>
         </div>
       )}
 
+      {/* Results */}
       {results.length > 0 && !isLoading && (
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-gray-700">
+        <div className="space-y-2">
+          <h3 className="ds-text-sm ds-font-medium" style={{ color: 'var(--gray-700)' }}>
             Found {results.length} results
           </h3>
           
-          <div className="space-y-3 max-h-96 overflow-y-auto">
+          <div className="space-y-2 max-h-80 overflow-y-auto">
             {results.map((result) => (
-              <div
-                key={result.id}
-                className="p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
-              >
+              <div key={result.id} className="ds-card">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-900 text-sm mb-1">
+                    <h4 className="ds-font-medium ds-text-sm mb-1" style={{ color: 'var(--gray-900)' }}>
                       {result.title}
                     </h4>
-                    <p className="text-sm text-gray-600 mb-2">
+                    <p className="ds-text-sm mb-2" style={{ color: 'var(--gray-600)' }}>
                       {result.summary}
                     </p>
                     
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <span className={`px-2 py-1 rounded-full ${
-                        result.type === 'url' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
-                      }`}>
+                    <div className="flex items-center gap-2 ds-text-xs" style={{ color: 'var(--gray-500)' }}>
+                      <span 
+                        className="px-2 py-1 rounded-full ds-text-xs"
+                        style={{
+                          backgroundColor: result.type === 'url' ? 'var(--purple-100)' : 'var(--green-100)',
+                          color: result.type === 'url' ? 'var(--purple-700)' : 'var(--green-700)'
+                        }}
+                      >
                         {result.type === 'url' ? '🔗 URL' : '📝 Text'}
                       </span>
                       <span>{result.date}</span>
                       {result.tags && (
                         <div className="flex gap-1">
                           {result.tags.map((tag, index) => (
-                            <span key={index} className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                            <span 
+                              key={index} 
+                              className="px-2 py-1 rounded-full ds-text-xs"
+                              style={{ 
+                                backgroundColor: 'var(--gray-100)', 
+                                color: 'var(--gray-600)' 
+                              }}
+                            >
                               {tag}
                             </span>
                           ))}
@@ -148,7 +161,7 @@ const SearchTab: React.FC = () => {
                   {result.source && (
                     <button
                       onClick={() => openSource(result.source!)}
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      className="ds-button-secondary ds-text-sm"
                     >
                       Open
                     </button>
@@ -160,11 +173,12 @@ const SearchTab: React.FC = () => {
         </div>
       )}
 
+      {/* Empty State */}
       {results.length === 0 && !isLoading && query && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8" style={{ color: 'var(--gray-500)' }}>
           <div className="text-4xl mb-2">🔍</div>
-          <p>No results found for "{query}"</p>
-          <p className="text-sm mt-1">Try rephrasing your search</p>
+          <p className="ds-text-sm">No results found for "{query}"</p>
+          <p className="ds-text-xs mt-1">Try rephrasing your search</p>
         </div>
       )}
     </div>

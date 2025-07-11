@@ -7,25 +7,31 @@ interface TabSwitcherProps {
 
 const TabSwitcher: React.FC<TabSwitcherProps> = ({ activeTab, onTabChange }) => {
   const tabs = [
-    { id: 'save', label: 'Save', icon: '💾' },
-    { id: 'search', label: 'Search', icon: '🔍' },
-    { id: 'vault', label: 'Vault', icon: '🗂️' }
+    { id: 'save', label: 'Save' },
+    { id: 'search', label: 'Search' },
+    { id: 'vault', label: 'Vault' }
   ];
 
   return (
-    <div className="flex border-b border-gray-200 bg-white">
-      {tabs.map((tab) => (
+    <div className="flex bg-white">
+      {tabs.map((tab, index) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id as 'save' | 'search' | 'vault')}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
-            activeTab === tab.id
-              ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-          }`}
+          className={`
+            flex-1 px-4 py-3 ds-text-sm ds-font-medium text-center transition-all duration-150
+            ${activeTab === tab.id
+              ? 'border-b-2 text-purple-600'
+              : 'text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-200'
+            }
+            ${index !== tabs.length - 1 ? 'border-r border-gray-100' : ''}
+          `}
+          style={{
+            borderBottomColor: activeTab === tab.id ? 'var(--purple-600)' : undefined,
+            color: activeTab === tab.id ? 'var(--purple-600)' : 'var(--gray-500)'
+          }}
         >
-          <span className="text-base">{tab.icon}</span>
-          <span>{tab.label}</span>
+          {tab.label}
         </button>
       ))}
     </div>
