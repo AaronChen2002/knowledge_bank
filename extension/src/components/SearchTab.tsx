@@ -1,59 +1,26 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, ExternalLink, FileText, Link2 } from 'lucide-react';
-
-interface SearchResult {
-  id: string;
-  title: string;
-  summary: string;
-  date: string;
-  tags: string[];
-  type: 'snippet' | 'page';
-  url?: string;
-}
+import * as mockService from '@/api/mockService';
+import type { SearchResult } from '@/shared/types';
 
 export const SearchTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const mockResults: SearchResult[] = [
-    {
-      id: '1',
-      title: 'React Hooks Best Practices',
-      summary: 'Key principles for using React hooks effectively in modern applications...',
-      date: '2025-01-09',
-      tags: ['react', 'hooks', 'frontend'],
-      type: 'snippet'
-    },
-    {
-      id: '2',
-      title: 'NBA Summer League Analysis',
-      summary: 'Comprehensive breakdown of player performances and team strategies...',
-      date: '2025-01-08',
-      tags: ['sports', 'nba', 'analysis'],
-      type: 'page',
-      url: 'https://www.theringer.com/2025/07/09/nba/summer'
-    }
-  ];
-
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     
     setIsSearching(true);
-    
-    // Simulate search delay
-    setTimeout(() => {
-      setResults(mockResults.filter(result => 
-        result.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        result.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        result.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      ));
-      setIsSearching(false);
-    }, 800);
+    const searchResults = await mockService.search(searchQuery);
+    setResults(searchResults);
+    setIsSearching(false);
+    setHasSearched(true);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -86,7 +53,7 @@ export const SearchTab = () => {
 
       {/* Results */}
       <div className="space-y-3">
-        {results.length === 0 && searchQuery && !isSearching && (
+        {results.length === 0 && hasSearched && !isSearching && (
           <Card className="shadow-sm">
             <CardContent className="pt-6 text-center">
               <Search className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
@@ -97,7 +64,7 @@ export const SearchTab = () => {
           </Card>
         )}
 
-        {results.length === 0 && !searchQuery && (
+        {results.length === 0 && !hasSearched && (
           <Card className="shadow-sm">
             <CardContent className="pt-6 text-center">
               <Search className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
@@ -114,17 +81,24 @@ export const SearchTab = () => {
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    {result.type === 'snippet' ? (
+                    {result.type === 'text' ? (
                       <FileText className="w-4 h-4 text-primary flex-shrink-0" />
                     ) : (
                       <Link2 className="w-4 h-4 text-primary flex-shrink-0" />
                     )}
                     <h3 className="font-medium text-sm leading-tight">{result.title}</h3>
                   </div>
-                  <Button size="sm" variant="outline" className="ml-2 flex-shrink-0">
-                    <ExternalLink className="w-3 h-3 mr-1" />
-                    Open
-                  </Button>
+                  {result.url && (
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="ml-2 flex-shrink-0"
+                      onClick={() => chrome.tabs.create({ url: result.url })}
+                    >
+                      <ExternalLink className="w-3 h-3 mr-1" />
+                      Open
+                    </Button>
+                  )}
                 </div>
 
                 <p className="text-sm text-muted-foreground line-clamp-2">
@@ -140,7 +114,7 @@ export const SearchTab = () => {
                     ))}
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(result.date).toLocaleDateString()}
+                    {new Date(result.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>

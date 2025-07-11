@@ -1,36 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { FileText, Link2, Check } from 'lucide-react';
+import { FileText, Link2, Check, Loader2 } from 'lucide-react';
+import * as mockService from '@/api/mockService';
 
 export const SaveTab = () => {
   const [textSnippet, setTextSnippet] = useState('');
   const [tags, setTags] = useState('');
-  const [currentUrl] = useState('https://www.theringer.com/2025/07/09/nba/summer');
+  const [currentUrl, setCurrentUrl] = useState('');
+  
+  const [isSavingSnippet, setIsSavingSnippet] = useState(false);
   const [isSnippetSaved, setIsSnippetSaved] = useState(false);
-  const [isPageSaved, setIsPageSaved] = useState(false);
-  const [showSnippetPreview, setShowSnippetPreview] = useState(false);
 
-  const handleSaveSnippet = () => {
+  const [isSavingPage, setIsSavingPage] = useState(false);
+  const [isPageSaved, setIsPageSaved] = useState(false);
+
+  useEffect(() => {
+    // Check for pending snippet from context menu first
+    chrome.storage.local.get(['pendingSnippet'], (result) => {
+      if (result.pendingSnippet) {
+        setTextSnippet(result.pendingSnippet.text);
+        setCurrentUrl(result.pendingSnippet.url);
+        // Important: Clear the pending snippet so it's not used again
+        chrome.storage.local.remove(['pendingSnippet']);
+      } else {
+        // If no pending snippet, get the current tab URL
+        chrome.runtime.sendMessage({ action: 'getCurrentTab' }, (response) => {
+          if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError.message);
+            setCurrentUrl('Error: Could not get current tab');
+          } else if (response?.url) {
+            setCurrentUrl(response.url);
+          }
+        });
+      }
+    });
+  }, []);
+
+  const handleSaveSnippet = async () => {
     if (!textSnippet.trim()) return;
     
-    // Simulate save
+    setIsSavingSnippet(true);
+    await mockService.ingest({
+      type: 'text',
+      content: textSnippet,
+      tags: tags.split(',').map(tag => tag.trim()),
+    });
+    setIsSavingSnippet(false);
+
     setIsSnippetSaved(true);
-    setShowSnippetPreview(true);
     setTimeout(() => {
       setIsSnippetSaved(false);
-      setShowSnippetPreview(false);
       setTextSnippet('');
       setTags('');
     }, 2500);
   };
 
-  const handleSavePage = () => {
-    // Simulate save
+  const handleSavePage = async () => {
+    setIsSavingPage(true);
+    await mockService.ingest({
+      type: 'url',
+      content: currentUrl,
+    });
+    setIsSavingPage(false);
+
     setIsPageSaved(true);
     setTimeout(() => {
       setIsPageSaved(false);
@@ -54,6 +91,7 @@ export const SaveTab = () => {
               value={textSnippet}
               onChange={(e) => setTextSnippet(e.target.value)}
               className="min-h-[100px] resize-none text-sm"
+              disabled={isSavingSnippet || isSnippetSaved}
             />
           </div>
           
@@ -67,43 +105,21 @@ export const SaveTab = () => {
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               className="text-sm"
+              disabled={isSavingSnippet || isSnippetSaved}
             />
           </div>
 
-          {showSnippetPreview && (
-            <div className="p-3 bg-accent/50 rounded-md border border-accent">
-              <div className="flex items-center gap-2 mb-2">
-                <Check className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-accent-foreground">Snippet Saved</span>
-              </div>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                {textSnippet.slice(0, 100)}...
-              </p>
-              {tags && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {tags.split(',').map((tag, index) => (
-                    <span key={index} className="text-xs bg-secondary px-2 py-1 rounded-md">
-                      {tag.trim()}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
           <Button 
             onClick={handleSaveSnippet}
-            disabled={!textSnippet.trim() || isSnippetSaved}
+            disabled={!textSnippet.trim() || isSavingSnippet || isSnippetSaved}
             className="w-full"
           >
-            {isSnippetSaved ? (
-              <>
-                <Check className="w-4 h-4 mr-2" />
-                Saved!
-              </>
-            ) : (
-              'Save Snippet'
-            )}
+            {isSavingSnippet ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : isSnippetSaved ? (
+              <Check className="w-4 h-4 mr-2" />
+            ) : null}
+            {isSavingSnippet ? 'Saving...' : isSnippetSaved ? 'Saved!' : 'Save Snippet'}
           </Button>
         </CardContent>
       </Card>
@@ -121,24 +137,22 @@ export const SaveTab = () => {
         <CardContent className="space-y-3">
           <div className="p-3 bg-muted rounded-md">
             <p className="text-sm font-medium break-all">
-              {currentUrl}
+              {currentUrl || 'Loading...'}
             </p>
           </div>
 
           <Button 
             onClick={handleSavePage}
-            disabled={isPageSaved}
+            disabled={isSavingPage || isPageSaved || !currentUrl}
             variant="outline"
             className="w-full"
           >
-            {isPageSaved ? (
-              <>
-                <Check className="w-4 h-4 mr-2" />
-                Page Saved!
-              </>
-            ) : (
-              'Save Page'
-            )}
+            {isSavingPage ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : isPageSaved ? (
+              <Check className="w-4 h-4 mr-2" />
+            ) : null}
+            {isSavingPage ? 'Saving...' : isPageSaved ? 'Page Saved!' : 'Save Page'}
           </Button>
         </CardContent>
       </Card>

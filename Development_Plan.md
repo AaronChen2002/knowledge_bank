@@ -47,44 +47,32 @@ knowledge_bank/
 - ✅ Built initial tabbed layout (Save/Search/Vault).
 - ✅ Background and content scripts for basic extension functionality.
 
-### Phase 2: Lovable UI Integration ✅ COMPLETE
-**Goal**: Replace the initial placeholder UI with the new design system from the `snippet-vault-flow` repository.
-- ✅ Integrated `shadcn/ui` components.
-- ✅ Replaced all three tabs (Save, Search, Vault) with new layouts.
-- ✅ Configured Tailwind CSS, PostCSS, and Vite for the new design system.
-- ✅ Ensured the extension builds successfully with the new UI.
-- **Deliverable**: A visually updated extension, still using mock data, that serves as the new foundation.
+### Phase 2: Lovable UI Integration & Mock API Foundation ✅ COMPLETE
+**Goal**: Replace the placeholder UI and build a robust, decoupled frontend foundation with a mock API and clear data contracts.
+- ✅ Integrated `shadcn/ui` and replaced all three tabs (Save, Search, Vault) with new layouts.
+- ✅ Created a centralized mock API (`mockService.ts`) to encapsulate all mock data and logic, decoupling it from UI components.
+- ✅ Established a canonical data contract with `shared/types.ts` to be used by both frontend and backend.
+- ✅ Reconnected all UI components to browser logic (fetching tab URL, context menu snippets, opening links).
+- ✅ Created a `useAuth` hook and implemented a complete mock login/logout flow.
+- **Deliverable**: A fully interactive and visually polished extension running on a mock, contract-driven foundation, ready for backend integration.
 
-### Phase 3: Frontend Logic Re-integration (Next for Frontend Dev) 📋 NEXT
-**Goal**: Connect the new UI components to the underlying Chrome extension logic. This is the immediate next step for the frontend developer.
-- **Task**: In `SaveTab.tsx`, replace the hardcoded URL with a call to the background script to get the actual current tab URL.
-- **Task**: Re-implement the logic to listen for and populate snippets saved via the context menu.
-- **Task**: In `SearchTab.tsx` and `VaultTab.tsx`, ensure the "Open" button correctly opens the result URL in a new tab using `chrome.tabs.create`.
-- **Task**: Clean up state management (`useState`) in each tab to be more robust and remove any redundant mock data.
-- **Deliverable**: A fully interactive extension where UI actions correctly interact with the browser.
+### Phase 3: Backend API Implementation (Next for Backend Dev) 📋 NEXT
+**Goal**: Build the real backend API, adhering to the established data contracts. This can be worked on in parallel with Phase 4.
+- **Task**: Define the database schema based on the `KnowledgeEntry` interface in `shared/types.ts`.
+- **Task**: Implement the API endpoints (`/api/ingest`, `/api/search`, etc.), ensuring their request/response bodies match the types in `shared/types.ts`.
+- **Task**: Set up a real database (PostgreSQL, etc.) and connect it to the API.
+- **Task**: Integrate a vector database for semantic search capabilities.
+- **Deliverable**: A deployed backend API that fulfills the contract defined in `shared/types.ts`.
 
-### Phase 4: Backend Foundation (Next for Backend Dev) 🔄 IN PROGRESS
-**Goal**: Build the core API structure and set up authentication. This can be worked on in parallel with Phase 3.
-- **Task**: Set up Clerk.dev account and configuration.
-- **Task**: Create initial API endpoints: `/api/ingest`, `/api/search`, `/api/entries/recent`.
-- **Task**: Implement basic auth middleware for JWT verification.
-- **Task**: Define the database schema for knowledge entries.
-- **Deliverable**: A running backend server with protected endpoints ready for integration.
+### Phase 4: Full-Stack Integration (Next for Frontend Dev) 🔌 WAITING
+**Goal**: Connect the frontend to the live backend API and implement real authentication.
+- **Task**: Create a real API service (e.g., `apiService.ts`) that makes authenticated `fetch` requests to the backend.
+- **Task**: Replace all calls to `mockService.ts` with calls to the new, real API service.
+- **Task**: Replace the `useAuth` hook with a real authentication context that uses a provider like Clerk.dev.
+- **Task**: Implement robust loading, error, and success states for all real network operations.
+- **Deliverable**: A fully working extension with a complete, end-to-end data and authentication flow.
 
-### Phase 5: Shared Types & Configuration 📋 WAITING
-**Goal**: Formalize the data contracts between the frontend and backend.
-- **Task**: Finalize all interfaces in `/shared/types.ts`.
-- **Task**: Prepare frontend API utility functions for making authenticated requests.
-- **Deliverable**: A stable, shared contract that both apps can rely on.
-
-### Phase 6: Full-Stack Integration 🔌 WAITING
-**Goal**: Connect the frontend to the live backend API.
-- **Task**: Replace all mock API calls in the frontend with real, authenticated requests to the backend.
-- **Task**: Implement robust loading, error, and success states for all network operations.
-- **Task**: Integrate the Clerk frontend SDK for login/logout functionality.
-- **Deliverable**: A fully working extension with a complete end-to-end data flow.
-
-### Phase 7: Polish & Deploy 🚀 WAITING
+### Phase 5: Polish & Deploy 🚀 WAITING
 **Goal**: Prepare the extension for production release.
 - **Task**: Refine error handling and optimize performance.
 - **Task**: Conduct thorough testing and bug fixing.
