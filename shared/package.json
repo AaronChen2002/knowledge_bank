@@ -1,0 +1,47 @@
+{
+  "name": "@knowledge-bank/shared-types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript interfaces for Knowledge Bank frontend and backend",
+  "main": "types.ts",
+  "types": "types.ts",
+  "exports": {
+    ".": "./types.ts",
+    "./types": "./types.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit types.ts",
+    "lint": "eslint types.ts",
+    "format": "prettier --write types.ts"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "interfaces",
+    "shared",
+    "knowledge-bank"
+  ],
+  "author": "Knowledge Bank Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.5.0"
+  },
+  "files": [
+    "types.ts",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AaronChen2002/knowledge_bank.git",
+    "directory": "shared"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+} 
