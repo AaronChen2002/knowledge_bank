@@ -20,11 +20,10 @@ knowledge_bank/
 ### Frontend (Chrome Extension)
 - **Framework**: React 18 + TypeScript
 - **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **State Management**: useContext + useReducer
-- **Auth**: Clerk.dev (popup-based OAuth)
+- **Styling**: Tailwind CSS + shadcn/ui
+- **State Management**: React Hooks (useState, useEffect)
+- **Auth**: Clerk.dev (planned)
 - **Extension**: Manifest V3
-- **Permissions**: `["storage", "tabs", "activeTab", "contextMenus"]`
 
 ### Backend (API Server)
 - **Runtime**: Node.js (TypeScript preferred) or Python
@@ -37,87 +36,60 @@ knowledge_bank/
 ### Shared
 - **Types**: Shared TypeScript interfaces
 - **API Contracts**: RESTful endpoints
-- **Config**: Environment variables and feature flags
 
 ---
 
 ## 🔧 Development Phases
 
-### Phase 1: Complete Frontend Foundation ✅ COMPLETE
-**Goal**: Working Chrome extension with full UI and mock functionality
+### Phase 1: Frontend Foundation ✅ COMPLETE
+**Goal**: Initial working Chrome extension with mock functionality.
+- ✅ Set up Vite + React + Tailwind in `/extension`.
+- ✅ Built initial tabbed layout (Save/Search/Vault).
+- ✅ Background and content scripts for basic extension functionality.
 
-**Completed Tasks:**
-- ✅ Set up Vite + React + Tailwind in `/extension`
-- ✅ Create `manifest.json` with proper permissions
-- ✅ Build tabbed layout (Save/Search/Vault) with complete UI
-- ✅ Implement state management with React hooks
-- ✅ Create Save tab with forms, URL capture, mock API integration
-- ✅ Create Search tab with mock results and full UI
-- ✅ Create Vault tab with mock recent entries and full UI
-- ✅ Background script setup with context menu registration
-- ✅ Content script for page interaction
-- ✅ Context menu text capture → popup communication
-- ✅ All loading/success/error states implemented
+### Phase 2: Lovable UI Integration ✅ COMPLETE
+**Goal**: Replace the initial placeholder UI with the new design system from the `snippet-vault-flow` repository.
+- ✅ Integrated `shadcn/ui` components.
+- ✅ Replaced all three tabs (Save, Search, Vault) with new layouts.
+- ✅ Configured Tailwind CSS, PostCSS, and Vite for the new design system.
+- ✅ Ensured the extension builds successfully with the new UI.
+- **Deliverable**: A visually updated extension, still using mock data, that serves as the new foundation.
 
-**Deliverable**: ✅ Complete working extension with all UI features and mock data
+### Phase 3: Frontend Logic Re-integration (Next for Frontend Dev) 📋 NEXT
+**Goal**: Connect the new UI components to the underlying Chrome extension logic. This is the immediate next step for the frontend developer.
+- **Task**: In `SaveTab.tsx`, replace the hardcoded URL with a call to the background script to get the actual current tab URL.
+- **Task**: Re-implement the logic to listen for and populate snippets saved via the context menu.
+- **Task**: In `SearchTab.tsx` and `VaultTab.tsx`, ensure the "Open" button correctly opens the result URL in a new tab using `chrome.tabs.create`.
+- **Task**: Clean up state management (`useState`) in each tab to be more robust and remove any redundant mock data.
+- **Deliverable**: A fully interactive extension where UI actions correctly interact with the browser.
 
-### Phase 2: Backend Foundation (Backend) 🔄 IN PROGRESS
-**Goal**: API structure and auth setup
+### Phase 4: Backend Foundation (Next for Backend Dev) 🔄 IN PROGRESS
+**Goal**: Build the core API structure and set up authentication. This can be worked on in parallel with Phase 3.
+- **Task**: Set up Clerk.dev account and configuration.
+- **Task**: Create initial API endpoints: `/api/ingest`, `/api/search`, `/api/entries/recent`.
+- **Task**: Implement basic auth middleware for JWT verification.
+- **Task**: Define the database schema for knowledge entries.
+- **Deliverable**: A running backend server with protected endpoints ready for integration.
 
-**Tasks:**
-- Set up Clerk.dev account and configuration
-- Create API endpoints: `/api/ingest`, `/api/search`, `/api/entries/recent`
-- Basic auth middleware (JWT verification)
-- Database schema for entries
-- Set up embedding pipeline
+### Phase 5: Shared Types & Configuration 📋 WAITING
+**Goal**: Formalize the data contracts between the frontend and backend.
+- **Task**: Finalize all interfaces in `/shared/types.ts`.
+- **Task**: Prepare frontend API utility functions for making authenticated requests.
+- **Deliverable**: A stable, shared contract that both apps can rely on.
 
-**Deliverable**: API endpoints return real data, auth works
+### Phase 6: Full-Stack Integration 🔌 WAITING
+**Goal**: Connect the frontend to the live backend API.
+- **Task**: Replace all mock API calls in the frontend with real, authenticated requests to the backend.
+- **Task**: Implement robust loading, error, and success states for all network operations.
+- **Task**: Integrate the Clerk frontend SDK for login/logout functionality.
+- **Deliverable**: A fully working extension with a complete end-to-end data flow.
 
-### Phase 3: Shared Types & Configuration 📋 NEXT
-**Goal**: Prepare for API integration
-
-**Tasks:**
-- Create `/shared/types.ts` for frontend/backend interfaces
-- Set up configuration management (`config.ts`)
-- Create auth context structure (with mocks)
-- Prepare API integration points
-
-**Deliverable**: Shared contracts ready for backend integration
-
-### Phase 4: Authentication Integration 🤝 WAITING FOR PHASE 2
-**Goal**: Real authentication working
-
-**Frontend Tasks:**
-- Integrate Clerk frontend SDK
-- Token storage in `chrome.storage.local`
-- Auth context implementation with real auth
-
-**Backend Tasks:**
-- Complete Clerk backend integration
-- JWT verification middleware
-- User-scoped data access
-
-**Deliverable**: Login/logout works, API calls authenticated
-
-### Phase 5: Real API Integration 🔌 WAITING FOR PHASES 2 & 4
-**Goal**: Replace mocks with real API calls
-
-**Tasks:**
-- Switch Save tab from mock to real API
-- Switch Search tab from mock to real API  
-- Switch Vault tab from mock to real API
-- Error handling for real network conditions
-
-**Deliverable**: Full search and browsing experience with real data
-
-### Phase 7: Polish & Deploy (Both)
-**Goal**: Production ready
-
-**Tasks:**
-- Error handling refinement
-- Performance optimization
-- Chrome Web Store submission prep
-- Production deployment
+### Phase 7: Polish & Deploy 🚀 WAITING
+**Goal**: Prepare the extension for production release.
+- **Task**: Refine error handling and optimize performance.
+- **Task**: Conduct thorough testing and bug fixing.
+- **Task**: Prepare for Chrome Web Store submission.
+- **Deliverable**: A production-ready extension.
 
 ---
 
