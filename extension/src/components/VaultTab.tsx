@@ -1,56 +1,28 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RefreshCw, ExternalLink, FileText, Link2, Archive } from 'lucide-react';
-
-interface VaultEntry {
-  id: string;
-  title: string;
-  summary: string;
-  date: string;
-  tags: string[];
-  type: 'snippet' | 'page';
-  url?: string;
-}
+import * as mockService from '@/api/mockService';
+import type { KnowledgeEntry } from '@/shared/types';
 
 export const VaultTab = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [entries] = useState<VaultEntry[]>([
-    {
-      id: '1',
-      title: 'React Hooks Best Practices',
-      summary: 'Key principles for using React hooks effectively in modern applications...',
-      date: '2025-01-09',
-      tags: ['react', 'hooks', 'frontend'],
-      type: 'snippet'
-    },
-    {
-      id: '2',
-      title: 'NBA Summer League Analysis',
-      summary: 'Comprehensive breakdown of player performances and team strategies...',
-      date: '2025-01-08',
-      tags: ['sports', 'nba', 'analysis'],
-      type: 'page',
-      url: 'https://www.theringer.com/2025/07/09/nba/summer'
-    },
-    {
-      id: '3',
-      title: 'TypeScript Advanced Types',
-      summary: 'Deep dive into conditional types, mapped types, and utility types...',
-      date: '2025-01-07',
-      tags: ['typescript', 'programming', 'types'],
-      type: 'snippet'
-    }
-  ]);
+  const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
+  
+  useEffect(() => {
+    loadEntries();
+  }, []);
+
+  const loadEntries = async () => {
+    setIsRefreshing(true);
+    const recentEntries = await mockService.getRecentEntries();
+    setEntries(recentEntries);
+    setIsRefreshing(false);
+  };
 
   const handleRefresh = () => {
-    setIsRefreshing(true);
-    
-    // Simulate refresh delay
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 1000);
+    loadEntries();
   };
 
   return (
@@ -74,7 +46,7 @@ export const VaultTab = () => {
 
       {/* Entries List */}
       <div className="space-y-2">
-        {entries.length === 0 && (
+        {entries.length === 0 && !isRefreshing && (
           <Card className="shadow-sm">
             <CardContent className="pt-4 text-center">
               <Archive className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
@@ -94,7 +66,7 @@ export const VaultTab = () => {
               <div className="space-y-2">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    {entry.type === 'snippet' ? (
+                    {entry.type === 'text' ? (
                       <FileText className="w-4 h-4 text-primary flex-shrink-0" />
                     ) : (
                       <Link2 className="w-4 h-4 text-primary flex-shrink-0" />
@@ -103,10 +75,17 @@ export const VaultTab = () => {
                       {entry.title}
                     </h3>
                   </div>
-                  <Button size="sm" variant="outline" className="ml-2 flex-shrink-0 h-7 px-2">
-                    <ExternalLink className="w-3 h-3 mr-1" />
-                    Open
-                  </Button>
+                  {entry.url && (
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="ml-2 flex-shrink-0 h-7 px-2"
+                      onClick={() => chrome.tabs.create({ url: entry.url })}
+                    >
+                      <ExternalLink className="w-3 h-3 mr-1" />
+                      Open
+                    </Button>
+                  )}
                 </div>
 
                 <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
@@ -116,7 +95,7 @@ export const VaultTab = () => {
                 <div className="flex items-center justify-between pt-1">
                   <div className="flex flex-wrap gap-1">
                     <Badge 
-                      variant={entry.type === 'snippet' ? 'default' : 'secondary'}
+                      variant={entry.type === 'text' ? 'default' : 'secondary'}
                       className="text-xs h-5"
                     >
                       {entry.type}
@@ -133,7 +112,7 @@ export const VaultTab = () => {
                     )}
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(entry.date).toLocaleDateString()}
+                    {new Date(entry.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>
