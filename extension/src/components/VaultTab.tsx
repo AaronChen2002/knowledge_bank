@@ -9,7 +9,7 @@ import type { KnowledgeEntry } from '@/shared/types';
 export const VaultTab = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
-  
+
   useEffect(() => {
     loadEntries();
   }, []);
@@ -60,7 +60,7 @@ export const VaultTab = () => {
           </Card>
         )}
 
-        {entries.map((entry) => (
+          {entries.map((entry) => (
           <Card key={entry.id} className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-3 pb-3">
               <div className="space-y-2">
@@ -72,7 +72,7 @@ export const VaultTab = () => {
                       <Link2 className="w-4 h-4 text-primary flex-shrink-0" />
                     )}
                     <h3 className="font-medium text-sm leading-tight truncate">
-                      {entry.title}
+                    {entry.title}
                     </h3>
                   </div>
                   {entry.url && (
@@ -87,7 +87,7 @@ export const VaultTab = () => {
                     </Button>
                   )}
                 </div>
-
+                
                 <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                   {entry.summary}
                 </p>
@@ -118,8 +118,8 @@ export const VaultTab = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+          ))}
+        </div>
     </div>
   );
 };
