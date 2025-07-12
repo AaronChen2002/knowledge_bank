@@ -5,13 +5,22 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { FileText, Link2, Check, Loader2 } from 'lucide-react';
+import { FileText, Link2, Check, Loader2, Sparkles } from 'lucide-react';
 import * as mockService from '@/api/mockService';
+import { generateSmartTags, saveTagPreference, TagSuggestion } from '@/api/smartTagService';
+import { TagSuggestions } from '@/components/ui/tag-suggestion';
 
 export const SaveTab = () => {
   const [textSnippet, setTextSnippet] = useState('');
   const [tags, setTags] = useState('');
   const [currentUrl, setCurrentUrl] = useState('');
+  
+  // Smart tagging state
+  const [tagSuggestions, setTagSuggestions] = useState<TagSuggestion[]>([]);
+  const [acceptedTags, setAcceptedTags] = useState<Set<string>>(new Set());
+  const [rejectedTags, setRejectedTags] = useState<Set<string>>(new Set());
+  const [isGeneratingTags, setIsGeneratingTags] = useState(false);
+  const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   
   const [isSavingSnippet, setIsSavingSnippet] = useState(false);
   const [isSnippetSaved, setIsSnippetSaved] = useState(false);
@@ -40,6 +49,69 @@ export const SaveTab = () => {
       }
     });
   }, []);
+
+  // Generate smart tags when content changes
+  useEffect(() => {
+    const generateTags = async () => {
+      if (!textSnippet.trim() || textSnippet.length < 10) {
+        setTagSuggestions([]);
+        setShowTagSuggestions(false);
+        return;
+      }
+
+      setIsGeneratingTags(true);
+      try {
+        const response = await generateSmartTags({
+          content: textSnippet,
+          url: currentUrl,
+        });
+        setTagSuggestions(response.suggestions);
+        setShowTagSuggestions(true);
+      } catch (error) {
+        console.error('Failed to generate tags:', error);
+      } finally {
+        setIsGeneratingTags(false);
+      }
+    };
+
+    // Debounce tag generation
+    const timeoutId = setTimeout(generateTags, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [textSnippet, currentUrl]);
+
+  const handleAcceptTag = (tag: string) => {
+    setAcceptedTags(prev => new Set([...prev, tag]));
+    setRejectedTags(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(tag);
+      return newSet;
+    });
+    
+    // Add to manual tags input
+    const currentTags = tags.split(',').map(t => t.trim()).filter(t => t);
+    if (!currentTags.includes(tag)) {
+      setTags([...currentTags, tag].join(', '));
+    }
+    
+    // Save preference for learning
+    saveTagPreference(tag, true);
+  };
+
+  const handleRejectTag = (tag: string) => {
+    setRejectedTags(prev => new Set([...prev, tag]));
+    setAcceptedTags(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(tag);
+      return newSet;
+    });
+    
+    // Remove from manual tags input
+    const currentTags = tags.split(',').map(t => t.trim()).filter(t => t !== tag);
+    setTags(currentTags.join(', '));
+    
+    // Save preference for learning
+    saveTagPreference(tag, false);
+  };
 
   const handleSaveSnippet = async () => {
     if (!textSnippet.trim()) return;
@@ -106,8 +178,30 @@ export const SaveTab = () => {
             onChange={(e) => setTags(e.target.value)}
               className="text-sm"
               disabled={isSavingSnippet || isSnippetSaved}
-          />
-        </div>
+            />
+            
+            {/* Smart Tag Suggestions */}
+            {showTagSuggestions && tagSuggestions.length > 0 && (
+              <div className="mt-3">
+                <TagSuggestions
+                  suggestions={tagSuggestions}
+                  onAccept={handleAcceptTag}
+                  onReject={handleRejectTag}
+                  acceptedTags={acceptedTags}
+                  rejectedTags={rejectedTags}
+                  disabled={isSavingSnippet || isSnippetSaved}
+                />
+              </div>
+            )}
+            
+            {/* Tag Generation Loading */}
+            {isGeneratingTags && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Sparkles className="w-4 h-4 animate-pulse" />
+                <span>Analyzing content for smart tags...</span>
+              </div>
+            )}
+          </div>
 
           <Button 
             onClick={handleSaveSnippet}
