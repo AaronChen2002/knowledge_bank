@@ -157,25 +157,25 @@ export const SaveTab = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="space-y-2">
+        <div className="space-y-2">
             <Textarea
-              placeholder="Paste or type your snippet here..."
+            placeholder="Paste or type your snippet here..."
               value={textSnippet}
               onChange={(e) => setTextSnippet(e.target.value)}
               className="min-h-[100px] resize-none text-sm"
               disabled={isSavingSnippet || isSnippetSaved}
-            />
-          </div>
-          
-          <div className="space-y-2">
+          />
+        </div>
+
+        <div className="space-y-2">
             <Label htmlFor="tags" className="text-sm font-medium">
-              Tags (optional)
+            Tags (optional)
             </Label>
             <Input
               id="tags"
               placeholder="AI, research, important"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
               className="text-sm"
               disabled={isSavingSnippet || isSnippetSaved}
             />
@@ -233,14 +233,14 @@ export const SaveTab = () => {
             <p className="text-sm font-medium break-all">
               {currentUrl || 'Loading...'}
             </p>
-          </div>
+      </div>
 
           <Button 
-            onClick={handleSavePage}
+              onClick={handleSavePage}
             disabled={isSavingPage || isPageSaved || !currentUrl}
             variant="outline"
             className="w-full"
-          >
+            >
             {isSavingPage ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : isPageSaved ? (

@@ -55,7 +55,7 @@ function App() {
           <TabsContent value="vault" className="h-full m-0 p-4 overflow-y-auto">
             <VaultTab />
           </TabsContent>
-        </div>
+      </div>
       </Tabs>
     </div>
   );
