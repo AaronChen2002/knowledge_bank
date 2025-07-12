@@ -52,7 +52,7 @@ export const SearchTab = () => {
       </div>
 
       {/* Results */}
-      <div className="space-y-3">
+        <div className="space-y-3">
         {results.length === 0 && hasSearched && !isSearching && (
           <Card className="shadow-sm">
             <CardContent className="pt-6 text-center">
@@ -120,8 +120,8 @@ export const SearchTab = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+            ))}
+          </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from './components/ui/tabs';
 import { SaveTab } from './components/SaveTab';
 import { SearchTab } from './components/SearchTab';
 import { VaultTab } from './components/VaultTab';
+import { AssistantTab } from './components/tabs/AssistantTab';
 import { Button } from './components/ui/button';
 import { useAuth } from './hooks/useAuth';
 import './App.css'
@@ -29,7 +30,7 @@ function App() {
     <div className="w-[400px] h-[600px] bg-background flex flex-col">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
         <div className="flex items-center border-b border-border px-1 py-1">
-          <TabsList className="grid w-full grid-cols-3 h-9">
+          <TabsList className="grid w-full grid-cols-4 h-9">
             <TabsTrigger value="save" className="text-sm font-medium">
               Save
             </TabsTrigger>
@@ -38,6 +39,9 @@ function App() {
             </TabsTrigger>
             <TabsTrigger value="vault" className="text-sm font-medium">
               Vault
+            </TabsTrigger>
+            <TabsTrigger value="assistant" className="text-sm font-medium">
+              Assistant
             </TabsTrigger>
           </TabsList>
           <Button onClick={logout} variant="ghost" size="sm" className="ml-2">
@@ -54,6 +58,9 @@ function App() {
           </TabsContent>
           <TabsContent value="vault" className="h-full m-0 p-4 overflow-y-auto">
             <VaultTab />
+          </TabsContent>
+          <TabsContent value="assistant" className="h-full m-0 p-4 overflow-y-auto">
+            <AssistantTab />
           </TabsContent>
         </div>
       </Tabs>
