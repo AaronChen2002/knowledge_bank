@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { RefreshCw, ExternalLink, FileText, Link2, Archive } from 'lucide-react';
+import { RefreshCw, ExternalLink, FileText, Link2, Archive, Hash } from 'lucide-react';
 import * as mockService from '@/api/mockService';
 import type { KnowledgeEntry } from '@/shared/types';
+import { TagManager } from '@/components/ui/tag-manager';
 
 export const VaultTab = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showTagManager, setShowTagManager] = useState(false);
   
   useEffect(() => {
     loadEntries();
@@ -25,6 +28,21 @@ export const VaultTab = () => {
     loadEntries();
   };
 
+  const handleTagSelect = (tag: string) => {
+    setSelectedTags(prev => [...prev, tag]);
+  };
+
+  const handleTagDeselect = (tag: string) => {
+    setSelectedTags(prev => prev.filter(t => t !== tag));
+  };
+
+  // Filter entries by selected tags
+  const filteredEntries = selectedTags.length > 0 
+    ? entries.filter(entry => 
+        selectedTags.some(tag => entry.tags.includes(tag))
+      )
+    : entries;
+
   return (
     <div className="space-y-3">
       {/* Header */}
@@ -32,21 +50,48 @@ export const VaultTab = () => {
         <div className="flex items-center gap-2">
           <Archive className="w-4 h-4 text-primary" />
           <h2 className="font-semibold text-base">Recent Entries</h2>
+          {selectedTags.length > 0 && (
+            <Badge variant="secondary" className="text-xs">
+              {filteredEntries.length} of {entries.length}
+            </Badge>
+          )}
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleRefresh}
-          disabled={isRefreshing}
-          className="h-8"
-        >
-          <RefreshCw className={`w-3 h-3 ${isRefreshing ? 'animate-spin' : ''}`} />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowTagManager(!showTagManager)}
+            className="h-8"
+          >
+            <Hash className="w-3 h-3 mr-1" />
+            Tags
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="h-8"
+          >
+            <RefreshCw className={`w-3 h-3 ${isRefreshing ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
       </div>
+
+      {/* Tag Manager */}
+      {showTagManager && (
+        <TagManager
+          selectedTags={selectedTags}
+          onTagSelect={handleTagSelect}
+          onTagDeselect={handleTagDeselect}
+          showPopularTags={true}
+          maxDisplay={15}
+        />
+      )}
 
       {/* Entries List */}
       <div className="space-y-2">
-        {entries.length === 0 && !isRefreshing && (
+        {filteredEntries.length === 0 && !isRefreshing && (
           <Card className="shadow-sm">
             <CardContent className="pt-4 text-center">
               <Archive className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
@@ -60,7 +105,7 @@ export const VaultTab = () => {
           </Card>
         )}
 
-        {entries.map((entry) => (
+        {filteredEntries.map((entry) => (
           <Card key={entry.id} className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-3 pb-3">
               <div className="space-y-2">
