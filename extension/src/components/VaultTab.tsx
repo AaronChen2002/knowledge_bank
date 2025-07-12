@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { RefreshCw, ExternalLink, FileText, Link2, Archive, Hash } from 'lucide-react';
+import { RefreshCw, ExternalLink, FileText, Link2, Archive, Hash, Highlighter } from 'lucide-react';
 import * as mockService from '@/api/mockService';
 import type { KnowledgeEntry } from '@/shared/types';
 import { TagManager } from '@/components/ui/tag-manager';
+import { HighlightsManager } from '@/components/ui/highlights-manager';
 
 export const VaultTab = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showTagManager, setShowTagManager] = useState(false);
+  const [showHighlightsManager, setShowHighlightsManager] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState<KnowledgeEntry | null>(null);
   
   useEffect(() => {
     loadEntries();
@@ -42,6 +45,16 @@ export const VaultTab = () => {
         selectedTags.some(tag => entry.tags.includes(tag))
       )
     : entries;
+
+  const handleEntryClick = (entry: KnowledgeEntry) => {
+    setSelectedEntry(entry);
+    setShowHighlightsManager(true);
+  };
+
+  const handleCloseHighlights = () => {
+    setShowHighlightsManager(false);
+    setSelectedEntry(null);
+  };
 
   return (
     <div className="space-y-3">
@@ -89,6 +102,14 @@ export const VaultTab = () => {
         />
       )}
 
+      {/* Highlights Manager */}
+      {showHighlightsManager && selectedEntry && (
+        <HighlightsManager
+          entryId={selectedEntry.id}
+          onHighlightUpdate={loadEntries}
+        />
+      )}
+
       {/* Entries List */}
       <div className="space-y-2">
         {filteredEntries.length === 0 && !isRefreshing && (
@@ -106,7 +127,11 @@ export const VaultTab = () => {
         )}
 
         {filteredEntries.map((entry) => (
-          <Card key={entry.id} className="shadow-sm hover:shadow-md transition-shadow">
+          <Card 
+            key={entry.id} 
+            className="shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => handleEntryClick(entry)}
+          >
             <CardContent className="pt-3 pb-3">
               <div className="space-y-2">
                 <div className="flex items-start justify-between">

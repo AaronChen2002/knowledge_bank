@@ -403,6 +403,116 @@ export type WebhookEvent =
   | 'search.performed';
 
 // ===================================
+// HIGHLIGHT & NOTE TYPES
+// ===================================
+
+/**
+ * Text highlight on a saved page
+ */
+export interface Highlight {
+  id: string;
+  entryId: string;           // Reference to the KnowledgeEntry
+  text: string;              // The highlighted text
+  startOffset: number;       // Character position where highlight starts
+  endOffset: number;         // Character position where highlight ends
+  color: HighlightColor;     // Highlight color
+  note?: string;             // Optional note attached to highlight
+  createdAt: string;         // ISO 8601 timestamp
+  updatedAt: string;         // ISO 8601 timestamp
+  userId: string;            // Owner of this highlight
+}
+
+/**
+ * Available highlight colors
+ */
+export type HighlightColor = 
+  | 'yellow' 
+  | 'green' 
+  | 'blue' 
+  | 'pink' 
+  | 'purple' 
+  | 'orange';
+
+/**
+ * Note attached to a highlight or entry
+ */
+export interface Note {
+  id: string;
+  entryId: string;           // Reference to the KnowledgeEntry
+  highlightId?: string;      // Optional reference to a specific highlight
+  content: string;           // Note content (supports markdown)
+  createdAt: string;         // ISO 8601 timestamp
+  updatedAt: string;         // ISO 8601 timestamp
+  userId: string;            // Owner of this note
+}
+
+/**
+ * API requests for highlights
+ */
+export interface CreateHighlightRequest {
+  entryId: string;
+  text: string;
+  startOffset: number;
+  endOffset: number;
+  color?: HighlightColor;
+  note?: string;
+}
+
+export interface UpdateHighlightRequest {
+  id: string;
+  text?: string;
+  color?: HighlightColor;
+  note?: string;
+}
+
+export interface DeleteHighlightRequest {
+  id: string;
+}
+
+/**
+ * API requests for notes
+ */
+export interface CreateNoteRequest {
+  entryId: string;
+  highlightId?: string;
+  content: string;
+}
+
+export interface UpdateNoteRequest {
+  id: string;
+  content: string;
+}
+
+export interface DeleteNoteRequest {
+  id: string;
+}
+
+/**
+ * Search highlights and notes
+ */
+export interface SearchHighlightsRequest {
+  query: string;
+  entryId?: string;
+  filters?: {
+    color?: HighlightColor[];
+    hasNotes?: boolean;
+    dateRange?: {
+      from: string;
+      to: string;
+    };
+  };
+  pagination?: PaginationParams;
+}
+
+export interface SearchHighlightsResponse {
+  success: boolean;
+  highlights: Highlight[];
+  notes: Note[];
+  pagination: PaginationInfo;
+  error?: string;
+}
+
+// ===================================
 // EXPORTS FOR CONVENIENCE
 // ===================================
 
