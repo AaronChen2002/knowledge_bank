@@ -59,10 +59,11 @@ function App() {
           <TabsContent value="vault" className="h-full m-0 p-4 overflow-y-auto">
             <VaultTab />
           </TabsContent>
-          <TabsContent value="assistant" className="h-full m-0 p-4 overflow-y-auto">
-            <AssistantTab />
-          </TabsContent>
-        </div>
+</TabsContent>
+<TabsContent value="assistant" className="h-full m-0 p-4 overflow-y-auto">
+  <AssistantTab />
+</TabsContent>
+</div>
       </Tabs>
     </div>
   );

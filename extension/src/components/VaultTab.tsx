@@ -56,6 +56,16 @@ export const VaultTab = () => {
       )
     : entries;
 
+  const handleEntryClick = (entry: KnowledgeEntry) => {
+    setSelectedEntry(entry);
+    setShowHighlightsManager(true);
+  };
+
+  const handleCloseHighlights = () => {
+    setShowHighlightsManager(false);
+    setSelectedEntry(null);
+  };
+
   return (
     <div className="space-y-3">
       {/* Header */}
