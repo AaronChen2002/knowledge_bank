@@ -39,6 +39,16 @@ export const VaultTab = () => {
     setSelectedTags(prev => prev.filter(t => t !== tag));
   };
 
+  const handleEntryClick = (entry: KnowledgeEntry) => {
+    setSelectedEntry(entry);
+    setShowHighlightsManager(true);
+  };
+
+  const handleCloseHighlights = () => {
+    setShowHighlightsManager(false);
+    setSelectedEntry(null);
+  };
+
   // Filter entries by selected tags
   const filteredEntries = selectedTags.length > 0 
     ? entries.filter(entry => 
@@ -150,14 +160,17 @@ export const VaultTab = () => {
                       size="sm" 
                       variant="outline" 
                       className="ml-2 flex-shrink-0 h-7 px-2"
-                      onClick={() => chrome.tabs.create({ url: entry.url })}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        chrome.tabs.create({ url: entry.url });
+                      }}
                     >
                       <ExternalLink className="w-3 h-3 mr-1" />
                       Open
                     </Button>
                   )}
                 </div>
-
+                
                 <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                   {entry.summary}
                 </p>
@@ -194,4 +207,4 @@ export const VaultTab = () => {
   );
 };
 
-export default VaultTab; 
+export default VaultTab;
